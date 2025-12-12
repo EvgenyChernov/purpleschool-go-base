@@ -7,15 +7,13 @@ import (
 
 func main() {
 	const IMTPower float64 = 2
-	userHeight := 1.8
 	var userKg float64
-	userKg = 100
+	var userHeight float64
+	fmt.Print("___Калькулятор индекса массы тела___ \n")
+	fmt.Print("Введите свой рост в м: ")
+	fmt.Scan(&userHeight)
+	fmt.Print("Введите свой вес в кг: ")
+	fmt.Scan(&userKg)
 	IMT := userKg / math.Pow(userHeight, IMTPower)
-	const USD float64 = 132
-	const EUR float64 = 0.86
-	const RUB float64 = 76.80
-	USDtoEUR := USD * EUR
-	USDtoRUB := USD * RUB
-
-	fmt.Print(USDtoEUR, USDtoRUB, IMT)
+	fmt.Print(IMT)
 }
