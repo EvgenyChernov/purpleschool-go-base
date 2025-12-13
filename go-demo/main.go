@@ -6,11 +6,26 @@ import (
 )
 
 func main() {
+	var count = 100
+	var isReturn string = "y"
+	for i := 0; i < count; i++ {
+		fmt.Println("___Калькулятор индекса массы тела___")
+		userHeight, userKg := getUserInput()
+		IMT := calculateIMT(userHeight, userKg)
 
-	fmt.Println("___Калькулятор индекса массы тела___")
-	userHeight, userKg := getUserInput()
-	IMT := calculateIMT(userHeight, userKg)
-	outputResult(IMT)
+		if IMT < 16 {
+			fmt.Println("У вас недостаток веса.")
+		}
+		outputResult(IMT)
+		fmt.Print("повторить расчет? y n ")
+
+		fmt.Scan(&isReturn)
+		if isReturn == "n" {
+			break
+		}
+
+	}
+
 }
 
 func outputResult(imt float64) {
