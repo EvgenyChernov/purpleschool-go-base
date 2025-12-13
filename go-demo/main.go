@@ -7,6 +7,12 @@ import (
 )
 
 func main() {
+	defer func() {
+		r := recover()
+		if r != nil {
+			fmt.Println("Recover ", r)
+		}
+	}()
 	var count = 100
 	var isReturn string = "y"
 	for i := 0; i < count; i++ {
@@ -14,8 +20,9 @@ func main() {
 		userHeight, userKg := getUserInput()
 		IMT, err := calculateIMT(userHeight, userKg)
 		if err != nil {
-			fmt.Println(err)
-			continue
+			// fmt.Println(err)
+			// continue
+			panic("не заняты параметры для расчета")
 		}
 		if IMT < 16 {
 			fmt.Println("У вас недостаток веса.")
