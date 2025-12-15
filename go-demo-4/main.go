@@ -3,15 +3,18 @@ package main
 import "fmt"
 
 func main() {
-	
-	a := 5
 
-	double(&a)
+	a := []int{1, 2, 3, 4}
+
+	reverse(a)
 
 	fmt.Println(a)
 }
 
-func double(num *int) {
-
-	*num = *num * 2
+func reverse(a []int) {
+	for i := 0; i < len(a)/2; i++ {
+		tmp := a[i]
+		a[i] = a[len(a)-1-i]
+		a[len(a)-1-i] = tmp
+	}
 }
