@@ -24,17 +24,21 @@ func (acc *account) generatPassword() {
 	acc.password = localPassword
 }
 
+func newAccount(login, password, url string) *account {
+	return &account{
+		url:      url,
+		password: password,
+		login:    login,
+	}
+}
+
 func main() {
 
 	login := promptData("Введите логин")
 	password := promptData("Введите пароль")
 	url := promptData("Введите URL")
 
-	account1 := account{
-		login:    login,
-		password: password,
-		url:      url,
-	}
+	account1 := newAccount(login, password, url)
 
 	account1.outputPassword()
 	account1.generatPassword()
