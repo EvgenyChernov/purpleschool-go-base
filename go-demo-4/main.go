@@ -26,7 +26,7 @@ func main() {
 		url:      url,
 	}
 
-	outputPassword(&account1)
+	account1.outputPassword()
 }
 
 
@@ -37,7 +37,7 @@ func promptData(prompt string) string {
 	return res
 }
 
-func outputPassword(acc *account) {
+func (acc account) outputPassword() {
 	fmt.Print(acc.login, acc.password, acc.url)
 }
 func generatPassword() {
