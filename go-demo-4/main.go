@@ -11,10 +11,20 @@ type account struct {
 	url      string
 }
 
+func (acc account) outputPassword() {
+	fmt.Println(acc.login, acc.password, acc.url)
+}
+
+func (acc *account) generatPassword() {
+	var lenghtPassword int = 10
+	var localPassword string
+	for i := 0; i < lenghtPassword; i++ {
+		localPassword += randomLetter()
+	}
+	acc.password = localPassword
+}
+
 func main() {
-
-	generatPassword()
-
 
 	login := promptData("Введите логин")
 	password := promptData("Введите пароль")
@@ -27,24 +37,15 @@ func main() {
 	}
 
 	account1.outputPassword()
+	account1.generatPassword()
+	account1.outputPassword()
 }
 
-
 func promptData(prompt string) string {
-	fmt.Print(prompt + " ")
+	fmt.Println(prompt + " ")
 	var res string
 	fmt.Scan(&res)
 	return res
-}
-
-func (acc account) outputPassword() {
-	fmt.Print(acc.login, acc.password, acc.url)
-}
-func generatPassword() {
-	var lenghtPassword int = 10 
-	for i := 0; i < lenghtPassword; i++ {
-		fmt.Print(randomLetter())
-	}	
 }
 
 func randomLetter() string {
