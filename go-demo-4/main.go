@@ -5,12 +5,19 @@ import (
 	"fmt"
 	"math/rand"
 	"net/url"
+	"time"
 )
 
 type account struct {
 	login    string
 	password string
 	url      string
+}
+
+type accountWithTimeStamp struct {
+	createdAt time.Time
+	updatedAt time.Time
+	account
 }
 
 func (acc account) outputPassword() {
@@ -26,17 +33,41 @@ func (acc *account) generatPassword() {
 	acc.password = localPassword
 }
 
-func newAccount(login, password, urlString string) (*account, error) {
+func newAccountWithTimeStam(login, password, urlString string) (*accountWithTimeStamp, error) {
+	if login == "" || password == "" || urlString == "" {
+		return nil, errors.New("invalid input")
+	}
+
 	_, err := url.ParseRequestURI(urlString)
 	if err != nil {
-		return nil, errors.New("Invalid URL")
+		return nil, errors.New("INVALID_URL")
 	}
-	return &account{
-		url:      urlString,
-		password: password,
-		login:    login,
+	return &accountWithTimeStamp{
+		account: account{
+			url:      urlString,
+			password: password,
+			login:    login,
+		},
+		createdAt: time.Now(),
+		updatedAt: time.Now(),
 	}, nil
 }
+
+// func newAccount(login, password, urlString string) (*account, error) {
+// 	if login == "" || password == "" || urlString == "" {
+// 		return nil, errors.New("invalid input")
+// 	}
+
+// 	_, err := url.ParseRequestURI(urlString)
+// 	if err != nil {
+// 		return nil, errors.New("INVALID_URL")
+// 	}
+// 	return &account{
+// 		url:      urlString,
+// 		password: password,
+// 		login:    login,
+// 	}, nil
+// }
 
 func main() {
 
@@ -44,7 +75,7 @@ func main() {
 	password := promptData("Введите пароль")
 	url := promptData("Введите URL")
 
-	account1, err := newAccount(login, password, url)
+	account1, err := newAccountWithTimeStam(login, password, url)
 	if err != nil {
 		fmt.Println("Неверный формат URL")
 		return
