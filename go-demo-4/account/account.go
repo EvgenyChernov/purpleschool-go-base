@@ -2,10 +2,11 @@ package account
 
 import (
 	"errors"
-	"fmt"
 	"math/rand"
 	"net/url"
 	"time"
+
+	"github.com/fatih/color"
 )
 
 type Account struct {
@@ -21,7 +22,8 @@ type accountWithTimeStamp struct {
 }
 
 func (acc Account) OutputPassword() {
-	fmt.Println(acc.login, acc.password, acc.url)
+	color.Cyan(acc.login, acc.password, acc.url)
+	// fmt.Println(acc.login, acc.password, acc.url)
 }
 
 func (acc *Account) GeneratPassword() {
