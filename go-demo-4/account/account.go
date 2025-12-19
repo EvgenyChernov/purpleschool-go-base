@@ -2,15 +2,17 @@ package account
 
 import (
 	"errors"
+	"fmt"
 	"math/rand"
 	"net/url"
+	"reflect"
 	"time"
 
 	"github.com/fatih/color"
 )
 
 type Account struct {
-	login    string
+	login    string `json:"login" xml:"test"`
 	password string
 	url      string
 }
@@ -44,7 +46,7 @@ func NewAccountWithTimeStam(login, password, urlString string) (*accountWithTime
 	if err != nil {
 		return nil, errors.New("INVALID_URL")
 	}
-	return &accountWithTimeStamp{
+	newAcc := &accountWithTimeStamp{
 		Account: Account{
 			url:      urlString,
 			password: password,
@@ -52,7 +54,10 @@ func NewAccountWithTimeStam(login, password, urlString string) (*accountWithTime
 		},
 		createdAt: time.Now(),
 		updatedAt: time.Now(),
-	}, nil
+	}
+	field, _ := reflect.TypeOf(newAcc).Elem().FieldByName("login")
+	fmt.Println(string(field.Tag))
+	return newAcc, nil
 }
 
 func randomLetter() string {
