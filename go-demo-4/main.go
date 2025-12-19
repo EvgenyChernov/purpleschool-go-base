@@ -8,20 +8,8 @@ import (
 
 func main() {
 	// files.WriteFile("Привет Мир! я ФАЙЛ !!!!", "file.txt")
-	files.ReadFile()
-	login := promptData("Введите логин")
-	password := promptData("Введите пароль")
-	url := promptData("Введите URL")
-
-	account1, err := account.NewAccount(login, password, url)
-	if err != nil {
-		fmt.Println("Неверный формат URL")
-		return
-	}
-	account1.OutputPassword()
-	account1.GeneratPassword()
-	account1.OutputPassword()
-
+	// files.ReadFile()
+	createAccount()
 }
 
 func promptData(prompt string) string {
@@ -29,4 +17,26 @@ func promptData(prompt string) string {
 	var res string
 	fmt.Scan(&res)
 	return res
+}
+
+func createAccount() {
+	login := promptData("Введите логин")
+	password := promptData("Введите пароль")
+	url := promptData("Введите URL")
+
+	myAccount, err := account.NewAccount(login, password, url)
+	if err != nil {
+		fmt.Println("Неверный формат URL")
+		return
+	}
+	file, err := myAccount.ToBytes() 
+	if err != nil {
+		fmt.Println("Не удалось перобразовать в json")
+		return
+	}
+	files.WriteFile(file, "data.json")
+
+	// myAccount.OutputPassword()
+	// myAccount.GeneratPassword()
+	// myAccount.OutputPassword()
 }

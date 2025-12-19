@@ -1,6 +1,7 @@
 package account
 
 import (
+	"encoding/json"
 	"errors"
 	"math/rand"
 	"net/url"
@@ -10,16 +11,24 @@ import (
 )
 
 type Account struct {
-	login     string `json:"login" xml:"test"`
-	password  string
-	url       string
-	createdAt time.Time
-	updatedAt time.Time
+	Login     string    `json:"login" xml:"test"`
+	Password  string    `json:"password"`
+	Url       string    `json:"url"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 func (acc Account) OutputPassword() {
-	color.Cyan(acc.login, acc.password, acc.url)
+	color.Cyan(acc.Login, acc.Password, acc.Url)
 	// fmt.Println(acc.login, acc.password, acc.url)
+}
+
+func (acc *Account) ToBytes() ([]byte, error) {
+	file, err := json.Marshal(acc)
+	if err != nil {
+		return nil, err
+	}
+	return  file, nil
 }
 
 func (acc *Account) GeneratPassword() {
@@ -28,24 +37,24 @@ func (acc *Account) GeneratPassword() {
 	for i := 0; i < lenghtPassword; i++ {
 		localPassword += randomLetter()
 	}
-	acc.password = localPassword
+	acc.Password = localPassword
 }
 
-func NewAccount(login, password, urlString string) (*Account, error) {
-	if login == "" || password == "" || urlString == "" {
+func NewAccount(Login, Password, UrlString string) (*Account, error) {
+	if Login == "" || Password == "" || UrlString == "" {
 		return nil, errors.New("invalid input")
 	}
 
-	_, err := url.ParseRequestURI(urlString)
+	_, err := url.ParseRequestURI(UrlString)
 	if err != nil {
 		return nil, errors.New("INVALID_URL")
 	}
 	newAcc := &Account{
-		url:       urlString,
-		password:  password,
-		login:     login,
-		createdAt: time.Now(),
-		updatedAt: time.Now(),
+		Url:       UrlString,
+		Password:  Password,
+		Login:     Login,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
 	// field, _ := reflect.TypeOf(newAcc).Elem().FieldByName("login")
 	// fmt.Println(string(field.Tag))

@@ -16,13 +16,13 @@ func ReadFile() {
 	fmt.Println(string(file))
 }
 
-func WriteFile(content string, name string) {
+func WriteFile(content []byte, name string) {
 	color.Green("Функционал записи файла")
 	file, err := os.Create(name)
 	if err != nil {
 		fmt.Println(err)
 	}
-	_, err = file.WriteString(content)
+	_, err = file.Write(content)
 	if err != nil {
 		defer file.Close()
 		fmt.Println(err)
