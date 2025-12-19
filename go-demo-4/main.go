@@ -4,12 +4,46 @@ import (
 	"demo/password/account"
 	"demo/password/files"
 	"fmt"
+
+	"github.com/fatih/color"
 )
 
 func main() {
 	// files.WriteFile("Привет Мир! я ФАЙЛ !!!!", "file.txt")
 	// files.ReadFile()
-	createAccount()
+	color.Green("1. Создать аккаунт")
+	color.Blue("2. Найти аккаунт")
+	color.Yellow("3. Уадалить аккаунт")
+	color.Red("4. Выход")
+	var inputUserComand string
+menu:
+	for {
+		fmt.Scan(&inputUserComand)
+		switch inputUserComand {
+		case "1":
+			color.Green("Вы выбрали создать аккаунт")
+			createAccount()
+		case "2":
+			color.Blue("Вы выбрали найти аккаунт")
+			findAccount()
+		case "3":
+			color.Yellow("Вы выбрали удалить аккаунт")
+			deleteAccount()
+		case "4":
+			color.Red("Вы выбрали выход")
+			break menu
+		}
+
+	}
+
+}
+
+func deleteAccount() {
+	panic("unimplemented")
+}
+
+func findAccount() {
+	panic("unimplemented")
 }
 
 func promptData(prompt string) string {
@@ -29,7 +63,7 @@ func createAccount() {
 		fmt.Println("Неверный формат URL")
 		return
 	}
-	file, err := myAccount.ToBytes() 
+	file, err := myAccount.ToBytes()
 	if err != nil {
 		fmt.Println("Не удалось перобразовать в json")
 		return
