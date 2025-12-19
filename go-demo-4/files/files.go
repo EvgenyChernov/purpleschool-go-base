@@ -8,7 +8,12 @@ import (
 )
 
 func ReadFile() {
-	color.Cyan("Функционал чтения файла")
+	file, err := os.ReadFile("file.txt")
+	if err != nil {
+		fmt.Println("error read file")
+		return
+	}
+	fmt.Println(string(file))
 }
 
 func WriteFile(content string, name string) {
@@ -19,7 +24,7 @@ func WriteFile(content string, name string) {
 	}
 	_, err = file.WriteString(content)
 	if err != nil {
-		file.Close()
+		defer file.Close()
 		fmt.Println(err)
 	}
 	fmt.Println("Запись успешна")
