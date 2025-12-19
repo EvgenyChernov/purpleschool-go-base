@@ -2,25 +2,19 @@ package account
 
 import (
 	"errors"
-	"fmt"
 	"math/rand"
 	"net/url"
-	"reflect"
 	"time"
 
 	"github.com/fatih/color"
 )
 
 type Account struct {
-	login    string `json:"login" xml:"test"`
-	password string
-	url      string
-}
-
-type accountWithTimeStamp struct {
+	login     string `json:"login" xml:"test"`
+	password  string
+	url       string
 	createdAt time.Time
 	updatedAt time.Time
-	Account
 }
 
 func (acc Account) OutputPassword() {
@@ -37,7 +31,7 @@ func (acc *Account) GeneratPassword() {
 	acc.password = localPassword
 }
 
-func NewAccountWithTimeStam(login, password, urlString string) (*accountWithTimeStamp, error) {
+func NewAccount(login, password, urlString string) (*Account, error) {
 	if login == "" || password == "" || urlString == "" {
 		return nil, errors.New("invalid input")
 	}
@@ -46,17 +40,15 @@ func NewAccountWithTimeStam(login, password, urlString string) (*accountWithTime
 	if err != nil {
 		return nil, errors.New("INVALID_URL")
 	}
-	newAcc := &accountWithTimeStamp{
-		Account: Account{
-			url:      urlString,
-			password: password,
-			login:    login,
-		},
+	newAcc := &Account{
+		url:       urlString,
+		password:  password,
+		login:     login,
 		createdAt: time.Now(),
 		updatedAt: time.Now(),
 	}
-	field, _ := reflect.TypeOf(newAcc).Elem().FieldByName("login")
-	fmt.Println(string(field.Tag))
+	// field, _ := reflect.TypeOf(newAcc).Elem().FieldByName("login")
+	// fmt.Println(string(field.Tag))
 	return newAcc, nil
 }
 

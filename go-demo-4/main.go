@@ -13,7 +13,7 @@ func main() {
 	password := promptData("Введите пароль")
 	url := promptData("Введите URL")
 
-	account1, err := account.NewAccountWithTimeStam(login, password, url)
+	account1, err := account.NewAccount(login, password, url)
 	if err != nil {
 		fmt.Println("Неверный формат URL")
 		return
