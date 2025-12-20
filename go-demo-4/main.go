@@ -2,7 +2,6 @@ package main
 
 import (
 	"demo/password/account"
-	"demo/password/files"
 	"fmt"
 
 	"github.com/fatih/color"
@@ -64,13 +63,8 @@ func createAccount() {
 		return
 	}
 	vault := account.NewVault()
+	color.Blue("МАЙ", vault)
 	vault.AddAccount(*myAccount)
-	data, err := vault.ToBytes()
-	if err != nil {
-		fmt.Println("Не удалось перобразовать в json")
-		return
-	}
-	files.WriteFile(data, "data.json")
 
 	// myAccount.OutputPassword()
 	// myAccount.GeneratPassword()

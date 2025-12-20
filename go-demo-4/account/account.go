@@ -18,7 +18,7 @@ type Account struct {
 }
 
 func (acc Account) OutputPassword() {
-	color.Cyan(acc.Login, acc.Password, acc.Url)
+	color.Cyan("%s %s %s", acc.Login, acc.Password, acc.Url)
 	// fmt.Println(acc.login, acc.password, acc.url)
 }
 

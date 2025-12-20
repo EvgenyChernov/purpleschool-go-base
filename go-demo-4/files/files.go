@@ -7,13 +7,14 @@ import (
 	"github.com/fatih/color"
 )
 
-func ReadFile() {
-	file, err := os.ReadFile("file.txt")
+func ReadFile(name string) ([]byte, error) {
+	file, err := os.ReadFile(name)
 	if err != nil {
 		fmt.Println("error read file")
-		return
+		return nil, err
 	}
-	fmt.Println(string(file))
+	return file, nil
+	// fmt.Println(string(file))
 }
 
 func WriteFile(content []byte, name string) {
