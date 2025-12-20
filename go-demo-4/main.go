@@ -38,11 +38,30 @@ menu:
 }
 
 func deleteAccount() {
-	panic("unimplemented")
+	color.Yellow("Введите URL")
+	var findUserURL string
+	fmt.Scan(&findUserURL)
+	vault := account.NewVault()
+	countDeleted, err := vault.FindByURLtoDelete(findUserURL)
+	if err != nil {
+		fmt.Println("Ничего не найдено")
+		return
+	}
+	fmt.Println("Удален ", countDeleted, " аккаунт")
+
 }
 
 func findAccount() {
-	panic("unimplemented")
+	color.Blue("Введите URL")
+	var findUserURL string
+	fmt.Scan(&findUserURL)
+	vault := account.NewVault()
+	findAccounts, err := vault.FindToURL(findUserURL)
+	if err != nil {
+		fmt.Println("Ничего не найдено")
+	}
+	fmt.Println(findAccounts)
+	color.Green("это все что нашлось")
 }
 
 func promptData(prompt string) string {

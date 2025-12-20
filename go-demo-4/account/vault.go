@@ -14,6 +14,42 @@ type Vault struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 
+func (vault *Vault) FindByURLtoDelete(findUserURL string) (int, error) {
+    var newAccounts []Account
+    deletedCount := 0
+
+    for _, acc := range vault.Accounts {
+        if acc.Url == findUserURL {
+            deletedCount++
+            continue // пропускаем элемент, который нужно удалить
+        }
+        newAccounts = append(newAccounts, acc)
+    }
+
+    vault.Accounts = newAccounts // обновляем срез
+
+    if deletedCount == 0 {
+        return 0, fmt.Errorf("no accounts found for URL: %s", findUserURL)
+    }
+
+    return deletedCount, nil
+}
+func (vault *Vault) FindToURL(findUserURL string) ([]Account, error) {
+	var result []Account
+
+	for _, acc := range vault.Accounts {
+		if acc.Url == findUserURL {
+			result = append(result, acc)
+		}
+	}
+
+	if len(result) == 0 {
+		return nil, fmt.Errorf("no accounts found for url: %s", findUserURL)
+	}
+
+	return result, nil
+}
+
 func NewVault() *Vault {
 	file, err := files.ReadFile("data.json")
 	if err != nil {
