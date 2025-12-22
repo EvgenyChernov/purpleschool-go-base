@@ -7,8 +7,19 @@ import (
 	"github.com/fatih/color"
 )
 
-func ReadFile(name string) ([]byte, error) {
-	file, err := os.ReadFile(name)
+type JsonDb struct {
+	fileName string
+}
+
+func NewJsonDb(name string) *JsonDb {
+
+	return &JsonDb{
+		fileName: name,
+	}
+}
+
+func (db *JsonDb) Read() ([]byte, error) {
+	file, err := os.ReadFile(db.fileName)
 	if err != nil {
 		fmt.Println("error read file")
 		return nil, err
@@ -17,9 +28,9 @@ func ReadFile(name string) ([]byte, error) {
 	// fmt.Println(string(file))
 }
 
-func WriteFile(content []byte, name string) {
+func (db *JsonDb) Write(content []byte) {
 	color.Green("Функционал записи файла")
-	file, err := os.Create(name)
+	file, err := os.Create(db.fileName)
 	if err != nil {
 		fmt.Println(err)
 	}

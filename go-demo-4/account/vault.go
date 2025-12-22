@@ -15,24 +15,24 @@ type Vault struct {
 }
 
 func (vault *Vault) FindByURLtoDelete(findUserURL string) (int, error) {
-    var newAccounts []Account
-    deletedCount := 0
+	var newAccounts []Account
+	deletedCount := 0
 
-    for _, acc := range vault.Accounts {
-        if acc.Url == findUserURL {
-            deletedCount++
-            continue // пропускаем элемент, который нужно удалить
-        }
-        newAccounts = append(newAccounts, acc)
-    }
+	for _, acc := range vault.Accounts {
+		if acc.Url == findUserURL {
+			deletedCount++
+			continue // пропускаем элемент, который нужно удалить
+		}
+		newAccounts = append(newAccounts, acc)
+	}
 
-    vault.Accounts = newAccounts // обновляем срез
+	vault.Accounts = newAccounts // обновляем срез
 
-    if deletedCount == 0 {
-        return 0, fmt.Errorf("no accounts found for URL: %s", findUserURL)
-    }
+	if deletedCount == 0 {
+		return 0, fmt.Errorf("no accounts found for URL: %s", findUserURL)
+	}
 
-    return deletedCount, nil
+	return deletedCount, nil
 }
 func (vault *Vault) FindToURL(findUserURL string) ([]Account, error) {
 	var result []Account
@@ -51,7 +51,8 @@ func (vault *Vault) FindToURL(findUserURL string) ([]Account, error) {
 }
 
 func NewVault() *Vault {
-	file, err := files.ReadFile("data.json")
+	db := files.NewJsonDb("data.json")
+	file, err := db.Read()
 	if err != nil {
 		return &Vault{
 			Accounts:  []Account{},
@@ -74,7 +75,8 @@ func (vault *Vault) AddAccount(acc Account) {
 	if err != nil {
 		fmt.Println("Ошибка преобразования")
 	}
-	files.WriteFile(data, "data.json")
+	db := files.NewJsonDb("data.json")
+	db.Write(data)
 }
 
 func (vault *Vault) ToBytes() ([]byte, error) {
