@@ -29,3 +29,7 @@ func PrintError(value any) {
 	}
 	fmt.Println(value)
 }
+
+func sumAny[T int | float32 | float64 | string](a, b T) T {
+	return a + b
+}
