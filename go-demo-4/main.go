@@ -2,6 +2,7 @@ package main
 
 import (
 	"demo/password/account"
+	"demo/password/files"
 	"fmt"
 
 	"github.com/fatih/color"
@@ -10,6 +11,7 @@ import (
 func main() {
 	// files.WriteFile("Привет Мир! я ФАЙЛ !!!!", "file.txt")
 	// files.ReadFile()
+	vault := account.NewVault(files.NewJsonDb("data.json"))
 	color.Green("1. Создать аккаунт")
 	color.Blue("2. Найти аккаунт")
 	color.Yellow("3. Уадалить аккаунт")
@@ -21,13 +23,13 @@ menu:
 		switch inputUserComand {
 		case "1":
 			color.Green("Вы выбрали создать аккаунт")
-			createAccount()
+			createAccount(vault)
 		case "2":
 			color.Blue("Вы выбрали найти аккаунт")
-			findAccount()
+			findAccount(vault)
 		case "3":
 			color.Yellow("Вы выбрали удалить аккаунт")
-			deleteAccount()
+			deleteAccount(vault)
 		case "4":
 			color.Red("Вы выбрали выход")
 			break menu
@@ -37,12 +39,11 @@ menu:
 
 }
 
-func deleteAccount() {
+func deleteAccount(vault *account.VaultWithDb) {
 	color.Yellow("Введите URL")
 	var findUserURL string
 	fmt.Scan(&findUserURL)
-	vault := account.NewVault()
-	countDeleted, err := vault.FindByURLtoDelete(findUserURL)
+	countDeleted, err := vault.Vault.FindByURLtoDelete(findUserURL)
 	if err != nil {
 		fmt.Println("Ничего не найдено")
 		return
@@ -51,11 +52,10 @@ func deleteAccount() {
 
 }
 
-func findAccount() {
+func findAccount(vault *account.VaultWithDb) {
 	color.Blue("Введите URL")
 	var findUserURL string
 	fmt.Scan(&findUserURL)
-	vault := account.NewVault()
 	findAccounts, err := vault.FindToURL(findUserURL)
 	if err != nil {
 		fmt.Println("Ничего не найдено")
@@ -71,7 +71,7 @@ func promptData(prompt string) string {
 	return res
 }
 
-func createAccount() {
+func createAccount(vault *account.VaultWithDb) {
 	login := promptData("Введите логин")
 	password := promptData("Введите пароль")
 	url := promptData("Введите URL")
@@ -81,11 +81,10 @@ func createAccount() {
 		fmt.Println("Неверный формат URL")
 		return
 	}
-	vault := account.NewVault()
 	color.Blue("МАЙ", vault)
-	vault.AddAccount(*myAccount)
+	vault.Vault.AddAccount(*myAccount)
 
-	// myAccount.OutputPassword()
+	// myAccount.OutputPassword()2
 	// myAccount.GeneratPassword()
 	// myAccount.OutputPassword()
 }
