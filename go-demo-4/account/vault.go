@@ -43,7 +43,6 @@ func (vault *VaultWithDb) FindToURL(findUserURL string) ([]Account, error) {
 	var result []Account
 
 	for _, acc := range vault.Vault.Accounts {
-		fmt.Println(vault.Vault.Accounts)
 		if acc.Url == findUserURL {
 			result = append(result, acc)
 		}
