@@ -3,12 +3,15 @@ package main
 import (
 	"demo/password/account"
 	"demo/password/cloud"
+	"demo/password/output"
 	"fmt"
 
 	"github.com/fatih/color"
 )
 
 func main() {
+	output.PrintError(1)
+	output.PrintError("1")
 	// files.WriteFile("Привет Мир! я ФАЙЛ !!!!", "file.txt")
 	// files.ReadFile()
 	// vault := account.NewVault(files.NewJsonDb("data.json"))
