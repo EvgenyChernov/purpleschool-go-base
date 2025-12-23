@@ -9,6 +9,12 @@ import (
 	"github.com/fatih/color"
 )
 
+var menu = map[string]func(*account.VaultWithDb){
+	"1": createAccount,
+	"2": findAccount,
+	"3": deleteAccount,
+}
+
 func main() {
 	output.PrintError(1)
 	output.PrintError("1")
@@ -24,21 +30,12 @@ func main() {
 menu:
 	for {
 		fmt.Scan(&inputUserComand)
-		switch inputUserComand {
-		case "1":
-			color.Green("Вы выбрали создать аккаунт")
-			createAccount(vault)
-		case "2":
-			color.Blue("Вы выбрали найти аккаунт")
-			findAccount(vault)
-		case "3":
-			color.Yellow("Вы выбрали удалить аккаунт")
-			deleteAccount(vault)
-		case "4":
-			color.Red("Вы выбрали выход")
+		menuFunc := menu[inputUserComand]
+		if menuFunc != nil {
+			menuFunc(vault)
+		} else {
 			break menu
 		}
-
 	}
 
 }
