@@ -1,13 +1,17 @@
 package account
 
 import (
-	"demo/password/files"
 	"encoding/json"
 	"fmt"
 	"time"
 
 	"github.com/fatih/color"
 )
+
+type Db interface {
+	Read() ([]byte, error)
+	Write(content []byte)
+}
 
 type Vault struct {
 	Accounts  []Account `json:"accounts"`
@@ -16,7 +20,7 @@ type Vault struct {
 
 type VaultWithDb struct {
 	Vault Vault
-	Db    *files.JsonDb
+	Db    Db
 }
 
 func (vault *Vault) FindByURLtoDelete(findUserURL string) (int, error) {
@@ -55,7 +59,7 @@ func (vault *VaultWithDb) FindToURL(findUserURL string) ([]Account, error) {
 	return result, nil
 }
 
-func NewVault(db *files.JsonDb) *VaultWithDb {
+func NewVault(db Db) *VaultWithDb {
 
 	file, err := db.Read()
 	if err != nil {
@@ -87,15 +91,15 @@ func NewVault(db *files.JsonDb) *VaultWithDb {
 	}
 }
 
-func (vault *Vault) AddAccount(acc Account) {
-	vault.Accounts = append(vault.Accounts, acc)
-	vault.UpdatedAt = time.Now()
-	data, err := vault.ToBytes()
+func (vault *VaultWithDb) AddAccount(acc Account) {
+	vault.Vault.Accounts = append(vault.Vault.Accounts, acc)
+	vault.Vault.UpdatedAt = time.Now()
+	data, err := vault.Vault.ToBytes()
 	if err != nil {
 		fmt.Println("Ошибка преобразования")
 	}
-	db := files.NewJsonDb("data.json")
-	db.Write(data)
+
+	vault.Db.Write(data)
 }
 
 func (vault *Vault) ToBytes() ([]byte, error) {

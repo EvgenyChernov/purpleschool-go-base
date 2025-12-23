@@ -2,7 +2,7 @@ package main
 
 import (
 	"demo/password/account"
-	"demo/password/files"
+	"demo/password/cloud"
 	"fmt"
 
 	"github.com/fatih/color"
@@ -11,7 +11,8 @@ import (
 func main() {
 	// files.WriteFile("Привет Мир! я ФАЙЛ !!!!", "file.txt")
 	// files.ReadFile()
-	vault := account.NewVault(files.NewJsonDb("data.json"))
+	// vault := account.NewVault(files.NewJsonDb("data.json"))
+	vault := account.NewVault(cloud.NewCloudDb("https://cloud.json"))
 	color.Green("1. Создать аккаунт")
 	color.Blue("2. Найти аккаунт")
 	color.Yellow("3. Уадалить аккаунт")
@@ -82,7 +83,7 @@ func createAccount(vault *account.VaultWithDb) {
 		return
 	}
 	color.Blue("МАЙ", vault)
-	vault.Vault.AddAccount(*myAccount)
+	vault.AddAccount(*myAccount)
 
 	// myAccount.OutputPassword()2
 	// myAccount.GeneratPassword()
