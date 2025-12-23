@@ -68,11 +68,25 @@ func findAccount(vault *account.VaultWithDb) {
 	color.Green("это все что нашлось")
 }
 
-func promptData(prompt string) string {
-	fmt.Println(prompt + " ")
-	var res string
-	fmt.Scan(&res)
-	return res
+func promptData[T string | []string](slice T) string {
+	switch v := any(slice).(type) {
+	case string:
+		fmt.Print(v + " ")
+		var res string
+		fmt.Scan(&res)
+		return res
+	case []string:
+		for i, value := range v {
+			if i == len(v)-1 {
+				fmt.Print(value + ": ")
+			} else {
+				fmt.Println(value)
+			}
+		}
+		return ""
+	default:
+		return ""
+	}
 }
 
 func createAccount(vault *account.VaultWithDb) {
