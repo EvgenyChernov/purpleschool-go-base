@@ -1,7 +1,11 @@
 package encrypter
 
 import (
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/rand"
 	"errors"
+	"io"
 	"os"
 )
 
@@ -19,11 +23,40 @@ func NewEncrypter() (*Encrypter, error) {
 	}, nil
 }
 
-func (e *Encrypter) Encrypt(str string) (string, error) {
+func (e *Encrypter) Encrypt(plainString []byte) ([]byte, error) {
+	block, err := aes.NewCipher([]byte(e.key))
+	if err != nil {
+		return nil, err
+	}
+	aesGSM, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, err
+	}
+	nonce := make([]byte, aesGSM.NonceSize())
+	_, err = io.ReadFull(rand.Reader, nonce)
+	if err != nil {
+		return nil, err
+	}
+	encrypted := aesGSM.Seal(nonce, nonce, plainString, nil)
+	return encrypted, nil
 
-	return "", nil
 }
 
-func (e *Encrypter) Decrypt(str string) (string, error) {
-	return "", nil
+func (e *Encrypter) Decrypt(encryptedString []byte) ([]byte, error) {
+	block, err := aes.NewCipher([]byte(e.key))
+	if err != nil {
+		return nil, err
+	}
+	aesGSM, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, err
+	}
+	NonceSize := aesGSM.NonceSize()
+
+	nonce, encryptedString := encryptedString[:NonceSize], encryptedString[NonceSize:]
+	decrypted, err := aesGSM.Open(nil, nonce, encryptedString, nil)
+	if err != nil {
+		return nil, err
+	}
+	return decrypted, nil
 }
