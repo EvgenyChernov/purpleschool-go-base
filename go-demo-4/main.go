@@ -58,7 +58,9 @@ func findAccount(vault *account.VaultWithDb) {
 	color.Blue("Введите URL")
 	var findUserURL string
 	fmt.Scan(&findUserURL)
-	findAccounts, err := vault.Find(findUserURL, cherURL)
+	findAccounts, err := vault.Find(findUserURL, func(a account.Account, s string) bool {
+		return strings.Contains(a.Url, s)
+	})
 	if err != nil {
 		fmt.Println("Ничего не найдено")
 	}
