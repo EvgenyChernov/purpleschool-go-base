@@ -1,6 +1,7 @@
 package account
 
 import (
+	"demo/password/encrypter"
 	"encoding/json"
 	"fmt"
 	"time"
@@ -27,8 +28,9 @@ type Vault struct {
 }
 
 type VaultWithDb struct {
-	Vault Vault
-	Db    Db
+	Vault     Vault
+	Db        Db
+	Encrypter *encrypter.Encrypter
 }
 
 func (vault *Vault) FindByURLtoDelete(findUserURL string) (int, error) {
@@ -85,7 +87,7 @@ func (vault *VaultWithDb) Find(str string, checker func(Account, string) bool) (
 	return result, nil
 }
 
-func NewVault(db Db) *VaultWithDb {
+func NewVault(db Db, encrypter *encrypter.Encrypter) *VaultWithDb {
 
 	file, err := db.Read()
 	if err != nil {
@@ -95,6 +97,7 @@ func NewVault(db Db) *VaultWithDb {
 				Accounts:  []Account{},
 				UpdatedAt: time.Now(),
 			},
+			Encrypter: encrypter,
 		}
 	}
 	color.Blue("МАЙ файл успешно прочитан")
@@ -109,11 +112,13 @@ func NewVault(db Db) *VaultWithDb {
 				Accounts:  []Account{},
 				UpdatedAt: time.Now(),
 			},
+			Encrypter: encrypter,
 		}
 	}
 	return &VaultWithDb{
-		Vault: vault,
-		Db:    db,
+		Vault:     vault,
+		Db:        db,
+		Encrypter: encrypter,
 	}
 }
 

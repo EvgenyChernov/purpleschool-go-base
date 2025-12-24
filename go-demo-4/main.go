@@ -2,6 +2,7 @@ package main
 
 import (
 	"demo/password/account"
+	"demo/password/encrypter"
 	"demo/password/files"
 	"demo/password/output"
 	"fmt"
@@ -24,12 +25,17 @@ func main() {
 	if err != nil {
 		fmt.Println("Error loading .env file")
 	}
-	fmt.Println(os.Getenv("VAR"))
+	// fmt.Println(os.Getenv("VAR"))
+
 	output.PrintError(1)
 	output.PrintError("1")
 	// files.WriteFile("Привет Мир! я ФАЙЛ !!!!", "file.txt")
 	// files.ReadFile()
-	vault := account.NewVault(files.NewJsonDb("data.json"))
+	encrypter, err := encrypter.NewEncrypter()
+	if err != nil {
+		fmt.Println("Error creating encrypter")
+	}
+	vault := account.NewVault(files.NewJsonDb("data.json"), encrypter)
 	// vault := account.NewVault(cloud.NewCloudDb("https://cloud.json"))
 	color.Green("1. Создать аккаунт")
 	color.Blue("2. Найти аккаунт по URL")
