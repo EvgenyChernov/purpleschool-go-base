@@ -3,8 +3,9 @@ package account
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/fatih/color"
 	"time"
+
+	"github.com/fatih/color"
 )
 
 type ByteReader interface {
@@ -50,6 +51,7 @@ func (vault *Vault) FindByURLtoDelete(findUserURL string) (int, error) {
 
 	return deletedCount, nil
 }
+
 func (vault *VaultWithDb) FindToURL(findUserURL string) ([]Account, error) {
 	var result []Account
 
@@ -61,6 +63,23 @@ func (vault *VaultWithDb) FindToURL(findUserURL string) ([]Account, error) {
 
 	if len(result) == 0 {
 		return nil, fmt.Errorf("no accounts found for url: %s", findUserURL)
+	}
+
+	return result, nil
+}
+
+func (vault *VaultWithDb) Find(str string, checker func(Account, string) bool) ([]Account, error) {
+	var result []Account
+
+	for _, acc := range vault.Vault.Accounts {
+		isMatched := checker(acc, str)
+		if isMatched {
+			result = append(result, acc)
+		}
+	}
+
+	if len(result) == 0 {
+		return nil, fmt.Errorf("no accounts found for login: %s", str)
 	}
 
 	return result, nil

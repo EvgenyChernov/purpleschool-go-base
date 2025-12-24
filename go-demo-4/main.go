@@ -5,6 +5,7 @@ import (
 	"demo/password/cloud"
 	"demo/password/output"
 	"fmt"
+	"strings"
 
 	"github.com/fatih/color"
 )
@@ -57,12 +58,16 @@ func findAccount(vault *account.VaultWithDb) {
 	color.Blue("Введите URL")
 	var findUserURL string
 	fmt.Scan(&findUserURL)
-	findAccounts, err := vault.FindToURL(findUserURL)
+	findAccounts, err := vault.Find(findUserURL, cherURL)
 	if err != nil {
 		fmt.Println("Ничего не найдено")
 	}
 	fmt.Println(findAccounts)
 	color.Green("это все что нашлось")
+}
+
+func cherURL(acc account.Account, str string) bool {
+	return strings.Contains(acc.Url, str)
 }
 
 func promptData[T string | []string](slice T) string {
