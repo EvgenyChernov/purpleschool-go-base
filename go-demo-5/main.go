@@ -2,6 +2,7 @@ package main
 
 import (
 	"demo/app-http/geo"
+	"demo/app-http/weather"
 	"flag"
 	"fmt"
 )
@@ -9,7 +10,7 @@ import (
 func main() {
 
 	city := flag.String("city", "", "Город пользователя")
-	// format := flag.Int("format", 1, "Формат вывода погоды")
+	format := flag.String("format", "1", "Формат вывода погоды")
 
 	flag.Parse()
 
@@ -19,5 +20,10 @@ func main() {
 		return
 	}
 	fmt.Println(geoData)
-
+	weather, err := weather.GetWeather(*geoData, *format)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(weather)
 }
