@@ -79,7 +79,7 @@ func (vault *VaultWithDb) Find(str string, checker func(Account, string) bool) (
 	}
 
 	if len(result) == 0 {
-		return nil, fmt.Errorf("no accounts found for login: %s", str)
+		return nil, fmt.Errorf("no accounts found for: %s", str)
 	}
 
 	return result, nil

@@ -2,7 +2,7 @@ package main
 
 import (
 	"demo/password/account"
-	"demo/password/cloud"
+	"demo/password/files"
 	"demo/password/output"
 	"fmt"
 	"strings"
@@ -12,8 +12,9 @@ import (
 
 var menu = map[string]func(*account.VaultWithDb){
 	"1": createAccount,
-	"2": findAccount,
-	"3": deleteAccount,
+	"2": findAccountByURL,
+	"3": findAccountByLogin,
+	"4": deleteAccount,
 }
 
 func main() {
@@ -21,12 +22,13 @@ func main() {
 	output.PrintError("1")
 	// files.WriteFile("Привет Мир! я ФАЙЛ !!!!", "file.txt")
 	// files.ReadFile()
-	// vault := account.NewVault(files.NewJsonDb("data.json"))
-	vault := account.NewVault(cloud.NewCloudDb("https://cloud.json"))
+	vault := account.NewVault(files.NewJsonDb("data.json"))
+	// vault := account.NewVault(cloud.NewCloudDb("https://cloud.json"))
 	color.Green("1. Создать аккаунт")
-	color.Blue("2. Найти аккаунт")
-	color.Yellow("3. Уадалить аккаунт")
-	color.Red("4. Выход")
+	color.Blue("2. Найти аккаунт по URL")
+	color.Green("3. Найти аккаунт по логину")
+	color.Yellow("4. Уадалить аккаунт")
+	color.Red("5. Выход")
 	var inputUserComand string
 menu:
 	for {
@@ -54,25 +56,37 @@ func deleteAccount(vault *account.VaultWithDb) {
 
 }
 
-func findAccount(vault *account.VaultWithDb) {
+func findAccountByURL(vault *account.VaultWithDb) {
 	color.Blue("Введите URL")
 	var findUserURL string
 	fmt.Scan(&findUserURL)
 	findAccounts, err := vault.Find(findUserURL, func(a account.Account, s string) bool {
-		return strings.Contains(a.Url, s)
+		return strings.Contains(strings.ToLower(a.Url), strings.ToLower(s))
 	})
 	if err != nil {
 		fmt.Println("Ничего не найдено")
+		return
 	}
 	fmt.Println(findAccounts)
 	color.Green("это все что нашлось")
 }
 
-func cherURL(acc account.Account, str string) bool {
-	return strings.Contains(acc.Url, str)
+func findAccountByLogin(vault *account.VaultWithDb) {
+	color.Green("Введите логин")
+	var findUserLogin string
+	fmt.Scan(&findUserLogin)
+	findAccounts, err := vault.Find(findUserLogin, func(a account.Account, s string) bool {
+		return strings.Contains(strings.ToLower(a.Login), strings.ToLower(s))
+	})
+	if err != nil {
+		fmt.Println("Ничего не найдено")
+		return
+	}
+	fmt.Println(findAccounts)
+	color.Green("это все что нашлось")
 }
 
-func promptData[T string | []string](slice T) string {
+func promptData[T string | []string](slice ...T) string {
 	switch v := any(slice).(type) {
 	case string:
 		fmt.Print(v + " ")
