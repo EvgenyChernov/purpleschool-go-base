@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"demo/password/account"
 	"demo/password/encrypter"
 	"demo/password/files"
@@ -42,10 +43,13 @@ func main() {
 	color.Green("3. Найти аккаунт по логину")
 	color.Yellow("4. Уадалить аккаунт")
 	color.Red("5. Выход")
+	reader := bufio.NewReader(os.Stdin)
 	var inputUserComand string
 menu:
 	for {
-		fmt.Scan(&inputUserComand)
+		fmt.Print("> ")
+		inputUserComand, _ = reader.ReadString('\n')
+		inputUserComand = strings.TrimSpace(inputUserComand)
 		menuFunc := menu[inputUserComand]
 		if menuFunc != nil {
 			menuFunc(vault)
@@ -58,8 +62,11 @@ menu:
 
 func deleteAccount(vault *account.VaultWithDb) {
 	color.Yellow("Введите URL")
-	var findUserURL string
-	fmt.Scan(&findUserURL)
+	fmt.Print("> ")
+	os.Stdout.Sync()
+	reader := bufio.NewReader(os.Stdin)
+	findUserURL, _ := reader.ReadString('\n')
+	findUserURL = strings.TrimSpace(findUserURL)
 	countDeleted, err := vault.Vault.FindByURLtoDelete(findUserURL)
 	if err != nil {
 		fmt.Println("Ничего не найдено")
@@ -71,8 +78,11 @@ func deleteAccount(vault *account.VaultWithDb) {
 
 func findAccountByURL(vault *account.VaultWithDb) {
 	color.Blue("Введите URL")
-	var findUserURL string
-	fmt.Scan(&findUserURL)
+	fmt.Print("> ")
+	os.Stdout.Sync()
+	reader := bufio.NewReader(os.Stdin)
+	findUserURL, _ := reader.ReadString('\n')
+	findUserURL = strings.TrimSpace(findUserURL)
 	findAccounts, err := vault.Find(findUserURL, func(a account.Account, s string) bool {
 		return strings.Contains(strings.ToLower(a.Url), strings.ToLower(s))
 	})
@@ -86,8 +96,17 @@ func findAccountByURL(vault *account.VaultWithDb) {
 
 func findAccountByLogin(vault *account.VaultWithDb) {
 	color.Green("Введите логин")
-	var findUserLogin string
-	fmt.Scan(&findUserLogin)
+	fmt.Print("> ")
+	os.Stdout.Sync()
+	reader := bufio.NewReader(os.Stdin)
+	findUserLogin, _ := reader.ReadString('\n')
+	findUserLogin = strings.TrimSpace(findUserLogin)
+
+	if findUserLogin == "" {
+		fmt.Println("Логин не может быть пустым")
+		return
+	}
+
 	findAccounts, err := vault.Find(findUserLogin, func(a account.Account, s string) bool {
 		return strings.Contains(strings.ToLower(a.Login), strings.ToLower(s))
 	})
@@ -100,16 +119,24 @@ func findAccountByLogin(vault *account.VaultWithDb) {
 }
 
 func promptData[T string | []string](slice ...T) string {
+	reader := bufio.NewReader(os.Stdin)
 	switch v := any(slice).(type) {
 	case string:
-		fmt.Print(v + " ")
-		var res string
-		fmt.Scan(&res)
-		return res
+		fmt.Print(v + ": ")
+		res, err := reader.ReadString('\n')
+		if err != nil {
+			return ""
+		}
+		return strings.TrimSpace(res)
 	case []string:
 		for i, value := range v {
 			if i == len(v)-1 {
 				fmt.Print(value + ": ")
+				res, err := reader.ReadString('\n')
+				if err != nil {
+					return ""
+				}
+				return strings.TrimSpace(res)
 			} else {
 				fmt.Println(value)
 			}
@@ -130,10 +157,6 @@ func createAccount(vault *account.VaultWithDb) {
 		fmt.Println("Неверный формат URL")
 		return
 	}
-	color.Blue("МАЙ", vault)
+	color.Blue("Аккаунт создан успешно")
 	vault.AddAccount(*myAccount)
-
-	// myAccount.OutputPassword()2
-	// myAccount.GeneratPassword()
-	// myAccount.OutputPassword()
 }

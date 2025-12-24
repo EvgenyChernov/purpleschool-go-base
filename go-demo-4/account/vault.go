@@ -89,7 +89,7 @@ func (vault *VaultWithDb) Find(str string, checker func(Account, string) bool) (
 
 func NewVault(db Db, encrypter *encrypter.Encrypter) *VaultWithDb {
 
-	file, err := db.Read()
+	encryptedData, err := db.Read()
 	if err != nil {
 		return &VaultWithDb{
 			Db: db,
@@ -100,6 +100,50 @@ func NewVault(db Db, encrypter *encrypter.Encrypter) *VaultWithDb {
 			Encrypter: encrypter,
 		}
 	}
+
+	// Проверяем, что файл не пустой
+	if len(encryptedData) == 0 {
+		return &VaultWithDb{
+			Db: db,
+			Vault: Vault{
+				Accounts:  []Account{},
+				UpdatedAt: time.Now(),
+			},
+			Encrypter: encrypter,
+		}
+	}
+
+	// Расшифровываем данные
+	var file []byte
+	if encrypter != nil {
+		file, err = encrypter.Decrypt(encryptedData)
+		if err != nil {
+			fmt.Println("ошибка расшифровки файла:", err)
+			return &VaultWithDb{
+				Db: db,
+				Vault: Vault{
+					Accounts:  []Account{},
+					UpdatedAt: time.Now(),
+				},
+				Encrypter: encrypter,
+			}
+		}
+	} else {
+		file = encryptedData
+	}
+
+	// Проверяем, что после расшифровки данные не пустые
+	if len(file) == 0 {
+		return &VaultWithDb{
+			Db: db,
+			Vault: Vault{
+				Accounts:  []Account{},
+				UpdatedAt: time.Now(),
+			},
+			Encrypter: encrypter,
+		}
+	}
+
 	color.Blue("МАЙ файл успешно прочитан")
 
 	var vault Vault
@@ -128,9 +172,22 @@ func (vault *VaultWithDb) AddAccount(acc Account) {
 	data, err := vault.Vault.ToBytes()
 	if err != nil {
 		fmt.Println("Ошибка преобразования")
+		return
 	}
 
-	vault.Db.Write(data)
+	// Шифруем данные перед записью
+	var encryptedData []byte
+	if vault.Encrypter != nil {
+		encryptedData, err = vault.Encrypter.Encrypt(data)
+		if err != nil {
+			fmt.Println("Ошибка шифрования:", err)
+			return
+		}
+	} else {
+		encryptedData = data
+	}
+
+	vault.Db.Write(encryptedData)
 }
 
 func (vault *Vault) ToBytes() ([]byte, error) {

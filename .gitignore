@@ -43,3 +43,4 @@ go-demo-4/.gocache
 # OS
 .DS_Store
 Thumbs.db
+go-demo-4/.gocache/trim.txt

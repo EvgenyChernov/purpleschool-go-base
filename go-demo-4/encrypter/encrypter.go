@@ -4,6 +4,7 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
+	"crypto/sha256"
 	"errors"
 	"io"
 	"os"
@@ -24,7 +25,9 @@ func NewEncrypter() (*Encrypter, error) {
 }
 
 func (e *Encrypter) Encrypt(plainString []byte) ([]byte, error) {
-	block, err := aes.NewCipher([]byte(e.key))
+	// Используем SHA256 для получения ключа фиксированного размера (32 байта для AES-256)
+	keyHash := sha256.Sum256([]byte(e.key))
+	block, err := aes.NewCipher(keyHash[:])
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +46,9 @@ func (e *Encrypter) Encrypt(plainString []byte) ([]byte, error) {
 }
 
 func (e *Encrypter) Decrypt(encryptedString []byte) ([]byte, error) {
-	block, err := aes.NewCipher([]byte(e.key))
+	// Используем SHA256 для получения ключа фиксированного размера (32 байта для AES-256)
+	keyHash := sha256.Sum256([]byte(e.key))
+	block, err := aes.NewCipher(keyHash[:])
 	if err != nil {
 		return nil, err
 	}
