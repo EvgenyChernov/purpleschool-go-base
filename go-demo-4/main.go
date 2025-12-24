@@ -20,6 +20,11 @@ var menu = map[string]func(*account.VaultWithDb){
 }
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Println("Error loading .env file")
+	}
+	fmt.Println(os.Getenv("VAR"))
 	output.PrintError(1)
 	output.PrintError("1")
 	// files.WriteFile("Привет Мир! я ФАЙЛ !!!!", "file.txt")
