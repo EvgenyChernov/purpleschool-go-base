@@ -21,3 +21,12 @@ func TestGetMyLocation(t *testing.T) {
 	}
 	t.Logf("Тест прошел успешно")
 }
+
+func TestGetMyLocationNoCity(t *testing.T) {
+	city := "Londonsdfsfdsfs"
+	_, err := geo.GetMyLocation(city)
+	if err != geo.ErrCityNotFound {
+		t.Errorf("Ожидается: %s, Получено: %s", geo.ErrCityNotFound, err)
+	}
+
+}
